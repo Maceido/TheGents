@@ -1,0 +1,153 @@
+/* style.css */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+#navBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+#navBar img {
+  width: 100px;
+  height: auto;
+}
+
+#navBar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+#navBar li {
+  margin-right: 10px;
+}
+
+#navBar li a {
+  color: #646464;
+  text-decoration: none;
+}
+
+#mainFrame {
+  padding: 20px;
+}
+
+#topFrame {
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  margin: 0;
+  color: #fff;
+  text-align: center;
+}
+
+#newsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  flex: 0 0 300px;
+  height: 200px;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background-color: #ddd;
+}
+
+.card:hover {
+  background-color: #db6403;
+}
+
+.card h2 {
+  margin-top: 0;
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.blur-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  filter: blur(5px);
+  z-index: -1;
+}
+
+.videos-container {
+  margin-bottom: 40px;
+}
+
+.videoContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.videoCard {
+  width: 300px;
+  height: 200px;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background-color: #ddd;
+}
+
+.videoCard:hover {
+  background-color: #db6403;
+}
+
+.videoCard h2 {
+  margin-top: 0;
+}
+
+.videoCard img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.navigation-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.navigation-button {
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  color: #646464;
+  cursor: pointer;
+}
+
+.navigation-button:focus {
+  outline: none;
+}
+
+.navigation-button:hover {
+  color: #db6403;
+}

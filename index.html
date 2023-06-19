@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>News Display</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fafafa;
+      position: relative;
+    }
+
+    .background-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('background.png'); /* Replace with your image path */
+      background-size: cover;
+      filter: blur(10px);
+      z-index: -1;
+    }
+      #header {
+      padding: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #header img {
+      width: 100px;
+      height: 100px;
+    }
+
+    #navbar ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    #navbar li {
+      display: inline-block;
+      margin-right: 20px;
+    }
+
+    #navbar li a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    #navbar li a:hover {
+      color: #e47d08;
+    }
+
+    #top-frame {
+      padding: 5px;
+      text-align: center;
+      color: #e47d08;
+    }
+
+    .news-section {
+      margin-bottom: 40px;
+    }
+
+    .news-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #fafafa;
+    }
+
+    .news-row {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      border: 1px solid #ffffff;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      width: 300px;
+      height: 300px;
+      margin-right: 20px;
+      margin-bottom: 20px;
+      background-color: #212121;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .card img {
+      width: 150%;
+      height: 150px;
+      object-fit: fill;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+
+    .card h2 {
+      font-size: 16px;
+      margin-top: 0;
+      color: #fafafa;
+    }
+
+    .card p {
+      font-size: 14px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      height: 200px;
+      overflow: hidden;
+      color: #fafafa;
+    }
+
+    .card a {
+      font-size: 14px;
+      color: #90caf9;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <div class="background-image"></div>
+    <img src="logo.png" alt="Logo">
+    <div id="navbar">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="games.html">Games</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="apply.html">Join</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="top-frame">
+    <h1>The Gents News</h1>
+  </div>
+
+  <div id="rss-feed"></div>
+
+  <script type="text/javascript">
+    const MAX_WORD_COUNT = 100;
+
+    const rssfeed_urls = [
+      { url: "https://www.theverge.com/rss/index.xml", source: "The Verge" },
+      { url: "https://www.espn.com/espn/rss/news", source: "ESPN" },
+      { url: "https://www.wired.com/feed/rss", source: "Wired" },
+      { url: "https://www.gamespot.com/feeds/game-news", source: "Gaming News" }
+    ];
+
+    function createCard(entry) {
+      let card = document.createElement("div");
+      card.className = "card";
+      card.onclick = function() {
+        window.open(entry.link, "_blank");
+      };
+
+      let imageSrc = "";
+
+      if (entry.image && entry.image.url) {
+        imageSrc = entry.image.url;
+      }
+
+      if (imageSrc !== "") {
+        let image = document.createElement("img");
+        image.src = imageSrc;
+        image.alt = entry.title;
+        card.appendChild(image);
+      }
+
+      let title = document.createElement("h2");
+      title.innerHTML = entry.title;
+      card.appendChild(title);
+
+      let description = document.createElement("p");
+      description.innerHTML = getTruncatedDescription(entry.description);
+      card.appendChild(description);
+
+      if (entry.description.length > MAX_WORD_COUNT) {
+        let readMoreLink = document.createElement("a");
+        readMoreLink.href = entry.link;
+        readMoreLink.target = "_blank";
+        readMoreLink.innerHTML = "";
+        card.appendChild(readMoreLink);
+      }
+
+      return card;
+    }
+
+    function getTruncatedDescription(description) {
+      const words = description.split(' ');
+
+      if (words.length > MAX_WORD_COUNT) {
+        const truncatedWords = words.slice(0, MAX_WORD_COUNT);
+        return truncatedWords.join(' ') + '...';
+      }
+
+      return description;
+    }
+
+    async function fetchNews() {
+      const rssFeedDiv = document.getElementById("rss-feed");
+
+      for (const rssfeed of rssfeed_urls) {
+        try {
+          const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssfeed.url}`);
+          const data = await response.json();
+
+          if (data.status === "ok") {
+            const news = data.items.slice(0, 50);
+            const section = document.createElement("div");
+            section.className = "news-section";
+
+            const title = document.createElement("h2");
+            title.className = "news-title";
+            title.innerHTML = rssfeed.source;
+            section.appendChild(title);
+
+            let newsRow = null;
+
+            for (let i = 0; i < news.length; i++) {
+              if (i % 5 === 0) {
+                newsRow = document.createElement("div");
+                newsRow.className = "news-row";
+                section.appendChild(newsRow);
+              }
+
+              const card = createCard(news[i]);
+              newsRow.appendChild(card);
+            }
+
+            rssFeedDiv.appendChild(section);
+          } else {
+            console.error(`Error fetching RSS feed: ${data.message}`);
+          }
+        } catch (error) {
+          console.error("Error fetching RSS feed:", error);
+        }
+      }
+    }
+
+    fetchNews();
+  </script>
+</body>
+</html>
